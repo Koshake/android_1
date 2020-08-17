@@ -45,11 +45,11 @@
     <View
         android:id="@+id/divider6"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="184dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="176dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.472"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -91,7 +91,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:autoText="false"
             android:gravity="center"
             android:padding="8dp"
             android:text="18\u00B0"

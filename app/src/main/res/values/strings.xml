@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Lesson 1</string>
+    <string name="city_country">Saint Petersburg, Russia</string>
+    <string name="mostly_sunny">Mostly sunny</string>
+    <string name="from">from</string>
+    <string name="to">to</string>
 </resources>

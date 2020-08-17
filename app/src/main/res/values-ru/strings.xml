@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Урок 1</string>
+    <string name="city_country">Санкт-Петербург, Россия</string>
+    <string name="mostly_sunny">Преимещественно солнечно</string>
+    <string name="from">от</string>
+    <string name="to">до</string>
+</resources>
