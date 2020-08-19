@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Урок 1</string>
     <string name="city_country">Санкт-Петербург, Россия</string>
     <string name="mostly_sunny">Преимещественно солнечно</string>
     <string name="from">от</string>
     <string name="to">до</string>
+    <string name="saint_petersburg">Санкт-Петербург</string>
+    <string name="moscow">Москва</string>
+    <string name="new_york">Нью Йорк</string>
+    <string name="Select_city">Выберите город</string>
+    <string name="Add_city">Добавьте город</string>
+    <string name="show_wind_speed">Показать cкорость ветра</string>
+    <string name="wind_speed">Скорость ветра</string>
+    <string name="temperature">Температура</string>
+    <string name="weather">Погода</string>
+    <string name="pressure">Давление</string>
+    <string name="settings">Настройки</string>
+    <string name="mmHg">мм рт.ст.</string>
+    <string name="Pa">Па</string>
+    <string name="ms">м/с</string>
+    <string name="kmh">км/ч</string>
 </resources>
