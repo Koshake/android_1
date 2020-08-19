@@ -20,4 +20,5 @@
     <string name="Pa">Па</string>
     <string name="ms">м/с</string>
     <string name="kmh">км/ч</string>
+    <string name="weather_app">Погодное приложение</string>
 </resources>
