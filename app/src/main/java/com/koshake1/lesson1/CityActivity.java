@@ -4,13 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import static com.koshake1.lesson1.Constants.CITY_RESULT;
 
 public class CityActivity extends AppCompatActivity {
 
@@ -31,6 +35,51 @@ public class CityActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CityActivity.this.onCheckWindClicked();
+            }
+        });
+
+        Button buttonDone = findViewById(R.id.buttonDone);
+        buttonDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText txt = findViewById(R.id.editText);
+                Intent intentResult = new Intent();
+                intentResult.putExtra(CITY_RESULT, txt.getText().toString());
+                setResult(RESULT_OK, intentResult);
+                finish();
+            }
+        });
+
+        final Button buttonSpb = findViewById(R.id.buttonSpb);
+        buttonSpb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentResult = new Intent();
+                intentResult.putExtra(CITY_RESULT, buttonSpb.getText().toString());
+                setResult(RESULT_OK, intentResult);
+                finish();
+            }
+        });
+
+        final Button buttonMsk = findViewById(R.id.buttonMsk);
+        buttonMsk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentResult = new Intent();
+                intentResult.putExtra(CITY_RESULT, buttonMsk.getText().toString());
+                setResult(RESULT_OK, intentResult);
+                finish();
+            }
+        });
+
+        final Button buttonNy = findViewById(R.id.buttonNy);
+        buttonNy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentResult = new Intent();
+                intentResult.putExtra(CITY_RESULT, buttonNy.getText().toString());
+                setResult(RESULT_OK, intentResult);
+                finish();
             }
         });
     }

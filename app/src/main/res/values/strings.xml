@@ -20,4 +20,6 @@
     <string name="ms">m/s</string>
     <string name="kmh">km/h</string>
     <string name="weather_app">Weather App</string>
+    <string name="done">Done</string>
+    <string name="yandex_weather">Yandex weather</string>
 </resources>

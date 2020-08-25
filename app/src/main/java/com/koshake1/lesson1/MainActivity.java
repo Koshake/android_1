@@ -1,18 +1,21 @@
 package com.koshake1.lesson1;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity{
-
+public class MainActivity extends AppCompatActivity implements  Constants {
+    private final static int REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +28,14 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        Button buttonYandex = findViewById(R.id.buttonYandex);
+        buttonYandex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonYandexClicked();
+            }
+        });
+
         ImageButton buttonSettings = findViewById(R.id.imageButtonSettings);
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +45,20 @@ public class MainActivity extends AppCompatActivity{
         });
         Log.d("MainActivity", "onCreate()");
         Toast.makeText(getApplicationContext(), "onCreate()", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode != REQUEST_CODE) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+        if (requestCode == REQUEST_CODE) {
+            TextView cityText = findViewById(R.id.textViewCity);
+            if (!data.getStringExtra(CITY_RESULT).isEmpty()) {
+                cityText.setText(data.getStringExtra(CITY_RESULT));
+            }
+        }
     }
 
     @Override
@@ -93,10 +118,18 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void onButtonSelectCityClicked() {
-        startActivity(new Intent(this, CityActivity.class));
+        //startActivity(new Intent(this, CityActivity.class));
+        Intent intent = new Intent(MainActivity.this, CityActivity.class);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     private void onButtonSettingsClicked() {
         startActivity(new Intent(this, SettingsActivity.class));
+    }
+
+    private void onButtonYandexClicked() {
+        Uri uri = Uri.parse(URL_YANDEX_WEATHER);
+        Intent browser = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(browser);
     }
 }
