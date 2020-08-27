@@ -21,4 +21,6 @@
     <string name="ms">м/с</string>
     <string name="kmh">км/ч</string>
     <string name="weather_app">Погодное приложение</string>
+    <string name="done">Готово</string>
+    <string name="yandex_weather">Яндекс погода</string>
 </resources>
