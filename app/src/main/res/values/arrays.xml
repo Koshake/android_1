@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cities">
+    <item>Moscow</item>
+    <item>Saint-Petersburg</item>
+    <item>Samara</item>
+    <item>New York</item>
+    <item>London</item>
+    <item>Paris</item>
+    <item>Madrid</item>
+    <item>Berlin</item>
+    <item>Viena</item>
+    <item>Rome</item>
+    <item>Strasburg</item>
+    <item>Istambul</item>
+    <item>Deli</item>
+    <item>Jakarta</item>
+    <item>San Paulo</item>
+        <item>Pekin</item>
+        <item>Tokio</item>
+        <item>Singapure</item>
+</string-array>
+
+    <string-array name="temperature">
+        <item>16\u00B0</item>
+        <item>17\u00B0</item>
+        <item>17\u00B0</item>
+        <item>16\u00B0</item>
+        <item>15\u00B0</item>
+        <item>15\u00B0</item>
+        <item>15\u00B0</item>
+        <item>17\u00B0</item>
+        <item>18\u00B0</item>
+        <item>19\u00B0</item>
+        <item>19\u00B0</item>
+        <item>19\u00B0</item>
+        <item>20\u00B0</item>
+        <item>21\u00B0</item>
+        <item>19\u00B0</item>
+        <item>18\u00B0</item>
+        <item>18\u00B0</item>
+        <item>18\u00B0</item>
+        <item>17\u00B0</item>
+        <item>17\u00B0</item>
+        <item>16\u00B0</item>
+        <item>16\u00B0</item>
+        <item>16\u00B0</item>
+        <item>15\u00B0</item>
+    </string-array>
+
+</resources>
