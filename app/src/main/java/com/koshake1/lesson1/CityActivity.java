@@ -93,42 +93,42 @@ public class CityActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(), "#CityActivity onDestroy()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "#CityActivity onDestroy()", Toast.LENGTH_SHORT).show();
         Log.d("CityActivity", "#CityActivity onDestroy()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Toast.makeText(getApplicationContext(), "#CityActivity onStart()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "#CityActivity onStart()", Toast.LENGTH_SHORT).show();
         Log.d("CityActivity", "#CityActivity onStart()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Toast.makeText(getApplicationContext(), "#CityActivity onStop()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "#CityActivity onStop()", Toast.LENGTH_SHORT).show();
         Log.d("CityActivity", "#CityActivity onStop()");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Toast.makeText(getApplicationContext(), "#CityActivity onPause()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "#CityActivity onPause()", Toast.LENGTH_SHORT).show();
         Log.d("CityActivity", "#CityActivity onPause()");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(getApplicationContext(), "#CityActivity onResume()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "#CityActivity onResume()", Toast.LENGTH_SHORT).show();
         Log.d("CityActivity", "#CityActivity onResume()");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Toast.makeText(getApplicationContext(), "#CityActivity onRestart()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "#CityActivity onRestart()", Toast.LENGTH_SHORT).show();
         Log.d("CityActivity", "#CityActivity onRestart()");
     }
 
@@ -138,7 +138,7 @@ public class CityActivity extends AppCompatActivity {
 
         CheckBox checkBox = (CheckBox)findViewById(R.id.checkWind);
         outState.putBoolean(WIND_SPEED, checkBox.isChecked());
-        Toast.makeText(getApplicationContext(), "#CityActivity onSaveInstantState()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "#CityActivity onSaveInstantState()", Toast.LENGTH_SHORT).show();
         Log.d("CityActivity", "#CityActivity onSaveInstanceState()" + checkBox.isChecked());
     }
 
@@ -149,7 +149,7 @@ public class CityActivity extends AppCompatActivity {
         CheckBox checkBox = (CheckBox)findViewById(R.id.checkWind);
         boolean checked = savedInstanceState.getBoolean(WIND_SPEED, false);
         checkBox.setChecked(checked);
-        Toast.makeText(getApplicationContext(), "#CityActivity onSaveRestoreState()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "#CityActivity onSaveRestoreState()", Toast.LENGTH_SHORT).show();
         Log.d("CityActivity", "#CityActivity onRestoreInstanceState() " + checked);
     }
 }
