@@ -23,4 +23,6 @@
     <string name="weather_app">Погодное приложение</string>
     <string name="done">Готово</string>
     <string name="yandex_weather">Яндекс погода</string>
+    <string name="Error_city">Неправильное название</string>
+    <string name="Dark_theme">Темная тема</string>
 </resources>

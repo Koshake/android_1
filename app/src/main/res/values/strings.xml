@@ -22,4 +22,6 @@
     <string name="weather_app">Weather App</string>
     <string name="done">Done</string>
     <string name="yandex_weather">Yandex weather</string>
+    <string name="Error_city">Wrong city name</string>
+    <string name="Dark_theme">Dark theme</string>
 </resources>

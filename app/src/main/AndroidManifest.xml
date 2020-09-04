@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CityActivity"></activity>
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>

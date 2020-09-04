@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,8 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ import static com.koshake1.lesson1.Constants.CITY_RESULT;
 public class TemperatureFragment extends Fragment {
 
     private final static int REQUEST_CODE = 123;
+    private final static int SETTING_CODE = 88;
     private final int MAX_HOURS = 24;
     private String currentCity;
     private boolean isLandscape;
@@ -89,6 +94,15 @@ public class TemperatureFragment extends Fragment {
                 onButtonSelectCityClicked();
             }
         });
+
+        ImageButton buttonSettings = getView().findViewById(R.id.imageButtonSettings);
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonSettingsClicked();
+            }
+        });
+
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -109,7 +123,9 @@ public class TemperatureFragment extends Fragment {
     }
 
     private void onButtonSettingsClicked() {
-        //startActivity(new Intent(this, SettingsActivity.class));
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), SettingActivity.class);
+        startActivityForResult(intent, SETTING_CODE);
     }
 
     private void showCitiesFragment() {
@@ -142,7 +158,10 @@ public class TemperatureFragment extends Fragment {
         if (requestCode == REQUEST_CODE) {
             TextView cityText = getView().findViewById(R.id.textViewCity);
             if (data != null && !data.getStringExtra(CITY_RESULT).isEmpty()) {
-                cityText.setText(data.getStringExtra(CITY_RESULT));
+                currentCity = data.getStringExtra(CITY_RESULT);
+                cityText.setText(currentCity);
+                Snackbar.make(getView(), String.format("City changed to %s", currentCity), Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
             }
         }
     }
