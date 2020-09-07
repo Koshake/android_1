@@ -10,7 +10,7 @@
         android:id="@+id/textViewCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/saint_petersburg"
+        android:text="@string/moscow"
         android:textAppearance="@style/MyTextAppearance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
@@ -20,7 +20,7 @@
         app:layout_constraintVertical_bias="0.14" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mostly_sunny"
@@ -33,6 +33,7 @@
         app:layout_constraintVertical_bias="0.206" />
 
     <TextView
+        android:id="@+id/textViewTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -42,7 +43,7 @@
         app:layout_constraintHorizontal_bias="0.676"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/textViewDescription"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.206" />
 
@@ -71,6 +72,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
+            android:id="@+id/textViewFrom"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -79,6 +81,7 @@
             android:textAppearance="@style/MyTextAppearance" />
 
         <TextView
+            android:id="@+id/textViewMin"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -95,6 +98,7 @@
             android:textAppearance="@style/MyTextAppearance" />
 
         <TextView
+            android:id="@+id/textViewMax"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -112,7 +116,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDescription"
         app:srcCompat="@drawable/sunny" />
 
     <com.google.android.material.button.MaterialButton

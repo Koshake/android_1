@@ -12,18 +12,30 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
+import com.google.gson.Gson;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.koshake1.lesson1.model.WeatherRequest;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import static com.koshake1.lesson1.Constants.CITY_RESULT;
 
@@ -32,16 +44,31 @@ public class TemperatureFragment extends Fragment {
     private final static int REQUEST_CODE = 123;
     private final static int SETTING_CODE = 88;
     private final int MAX_HOURS = 24;
+    private final float TEMP_OFFSET = 273.15f;
     private String currentCity;
     private boolean isLandscape;
     private List<Parcel> history;
 
-    public static TemperatureFragment newInstance(String param1) {
-        TemperatureFragment fragment = new TemperatureFragment();
-        Bundle args = new Bundle();
-        args.putString(CITY_RESULT, param1);
-        fragment.setArguments(args);
-        return fragment;
+    private TextView cityText;
+    private TextView tempText;
+    private TextView minTempText;
+    private TextView maxTempText;
+    private TextView description;
+
+    WeatherHandler weatherHandler = new WeatherHandler(this);
+
+    private static final String TAG = "WEATHER";
+
+    private void init() {
+        cityText = getView().findViewById(R.id.textViewCity);
+        tempText = getView().findViewById(R.id.textViewTemp);
+        minTempText = getView().findViewById(R.id.textViewMin);
+        maxTempText = getView().findViewById(R.id.textViewMax);
+        description = getView().findViewById(R.id.textViewDescription);
+    }
+
+    public String getCurrentCity() {
+        return currentCity;
     }
 
     @Override
@@ -62,12 +89,11 @@ public class TemperatureFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
-            currentCity = savedInstanceState.getString(CITY_RESULT, getResources().getString(R.string.saint_petersburg));
-            TextView cityText = getView().findViewById(R.id.textViewCity);
+            currentCity = savedInstanceState.getString(CITY_RESULT, getResources().getString(R.string.moscow));
             cityText.setText(currentCity);
-
         } else {
-            currentCity = getResources().getString(R.string.saint_petersburg);
+            init();
+            currentCity = getResources().getString(R.string.moscow);
             history = new ArrayList<>();
             for (int i = 0; i < MAX_HOURS; i++) {
                 Parcel parcel = new Parcel(i, getResources().getStringArray(R.array.temperature)[i]);
@@ -103,7 +129,9 @@ public class TemperatureFragment extends Fragment {
             }
         });
 
+        weatherHandler.updateWeather();
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -162,7 +190,25 @@ public class TemperatureFragment extends Fragment {
                 cityText.setText(currentCity);
                 Snackbar.make(getView(), String.format("City changed to %s", currentCity), Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
+
+                weatherHandler.updateWeather();
             }
         }
     }
+
+    public void displayWeather(WeatherRequest weatherRequest) {
+        cityText.setText(weatherRequest.getName());
+        tempText.setText(String.format("%d\u00B0", Math.round(weatherRequest.getMain().getTemp() - TEMP_OFFSET)));
+        minTempText.setText(String.format("%d\u00B0", Math.round(weatherRequest.getMain().getTempMin() - TEMP_OFFSET)));
+        maxTempText.setText(String.format("%d\u00B0", Math.round(weatherRequest.getMain().getTempMax() - TEMP_OFFSET)));
+        description.setText(weatherRequest.getWeather()[0].getDescription());
+    }
+
+    public void setMessage(String text) {
+        Snackbar.make(getView(), text, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null).show();
+    }
 }
+
+
+

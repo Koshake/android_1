@@ -4,7 +4,7 @@
     <string name="mostly_sunny">Mostly sunny</string>
     <string name="from">from</string>
     <string name="to">to</string>
-    <string name="saint_petersburg">Saint Petersburg</string>
+    <string name="saint_petersburg">Saint-Petersburg</string>
     <string name="moscow">Moscow</string>
     <string name="new_york">New York</string>
     <string name="Select_city">Select city</string>
@@ -24,4 +24,5 @@
     <string name="yandex_weather">Yandex weather</string>
     <string name="Error_city">Wrong city name</string>
     <string name="Dark_theme">Dark theme</string>
+    <string name="Update">Update</string>
 </resources>
