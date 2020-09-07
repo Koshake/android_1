@@ -1,10 +1,22 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppDarkTheme" parent="Theme.MaterialComponents"/>
+
+    <style name="MyButtonStyle" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">@color/myButtonColor</item>
+    </style>
+
+    <style name="MyTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#082F08</item>
+        <item name="android:textStyle">italic|bold</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 </resources>

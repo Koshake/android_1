@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/saint_petersburg"
+        android:textAppearance="@style/MyTextAppearance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -23,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mostly_sunny"
+        android:textAppearance="@style/MyTextAppearance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.451"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,10 +33,11 @@
         app:layout_constraintVertical_bias="0.206" />
 
     <TextView
-        android:layout_width="23dp"
-        android:layout_height="19dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text="16\u00B0"
+        android:textAppearance="@style/MyTextAppearance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.676"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -72,21 +75,24 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/from" />
+            android:text="@string/from"
+            android:textAppearance="@style/MyTextAppearance" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="8dp"
-            android:text="12\u00B0" />
+            android:text="12\u00B0"
+            android:textAppearance="@style/MyTextAppearance" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/to" />
+            android:text="@string/to"
+            android:textAppearance="@style/MyTextAppearance" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -94,6 +100,7 @@
             android:gravity="center"
             android:padding="8dp"
             android:text="18\u00B0"
+            android:textAppearance="@style/MyTextAppearance"
             android:textSize="14sp" />
 
     </LinearLayout>
@@ -108,34 +115,41 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         app:srcCompat="@drawable/sunny" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSelectCity"
-        style="@android:style/Widget.Button"
+        style="@style/MyButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/transparent"
         android:fontFamily="sans-serif-light"
         android:text="@string/Select_city"
         android:textSize="12sp"
+        app:cornerRadius="10dp"
+        android:textAppearance="@style/MyTextAppearance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+
     <ImageButton
         android:id="@+id/imageButtonSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:cornerRadius="10dp"
+        android:backgroundTint="@color/myButtonColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_preferences" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonYandex"
+        style="@style/MyButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        app:cornerRadius="10dp"
         android:text="@string/yandex_weather"
+        android:textAppearance="@style/MyTextAppearance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -147,6 +161,7 @@
         app:layout_constraintBottom_toTopOf="@+id/buttonYandex"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="@style/MyTextAppearance"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 

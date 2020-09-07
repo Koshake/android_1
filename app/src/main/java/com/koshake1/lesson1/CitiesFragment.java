@@ -18,11 +18,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.koshake1.lesson1.Constants.CITY_RESULT;
 
@@ -31,6 +36,7 @@ public class CitiesFragment extends Fragment {
     final int RESULT_OK = 0;
     private String currentCity;
     private List<String> cities;
+    private Pattern checkCity = Pattern.compile("^[A-Z][a-z]{2,}$");
 
     public static CitiesFragment create(String city) {
         CitiesFragment f = new CitiesFragment();
@@ -71,7 +77,6 @@ public class CitiesFragment extends Fragment {
                 Intent intentResult = new Intent();
                 currentCity = city;
                 intentResult.putExtra(CITY_RESULT, currentCity);
-
                 if (getTargetFragment() != null) {
                     getTargetFragment().onActivityResult(getTargetRequestCode(), RESULT_OK, intentResult);
                 } else {
@@ -85,82 +90,46 @@ public class CitiesFragment extends Fragment {
             }
         });
 
-        final EditText editCity = getView().findViewById(R.id.editText);
+        final TextInputEditText editCity = getView().findViewById(R.id.inputCity);
         editCity.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    cities.add(editCity.getText().toString());
-                    adapter.notifyItemInserted(cities.size() - 1);
-                    editCity.setText("");
-                    Toast.makeText(requireContext(), editCity.getText(), Toast.LENGTH_SHORT).show();
+                    if (validate(editCity, checkCity, getResources().getString(R.string.Error_city))) {
+                        cities.add(editCity.getText().toString());
+                        Snackbar.make(getView(), String.format("City %s added", editCity.getText().toString()), Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                        adapter.notifyItemInserted(cities.size() - 1);
+                        editCity.setText("");
+                    }
+
                     return true;
                 }
                 return false;
             }
         });
-        /*
-        final Button buttonSpb = getView().findViewById(R.id.buttonSpb);
 
-        buttonSpb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intentResult = new Intent();
-                currentCity = buttonSpb.getText().toString();
-                intentResult.putExtra(CITY_RESULT, buttonSpb.getText().toString());
+    }
 
-                if (getTargetFragment() != null) {
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), 0, intentResult);
-                } else {
-                    requireActivity().setResult(0, intentResult);
-                    if (getResources().getConfiguration().orientation
-                            != Configuration.ORIENTATION_LANDSCAPE) {
-                        requireActivity().finish();
-                    }
-                }
+    private boolean validate(TextView tv, Pattern check, String message){
+        String value = tv.getText().toString();
+        if (check.matcher(value).matches()) {
+            hideError(tv);
+            return true;
+        }
+        else {
+            showError(tv, message);
+            return false;
+        }
+    }
 
-            }
-        });
+    private void showError(TextView view, String message) {
+        view.setError(message);
+    }
 
-        final Button buttonMsk = getView().findViewById(R.id.buttonMsk);
-        buttonMsk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intentResult = new Intent();
-                currentCity = buttonMsk.getText().toString();
-                intentResult.putExtra(CITY_RESULT, currentCity);
-                if (getTargetFragment() != null) {
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), 0, intentResult);
-                } else {
-                    requireActivity().setResult(0, intentResult);
-                    if (getResources().getConfiguration().orientation
-                            != Configuration.ORIENTATION_LANDSCAPE) {
-                        requireActivity().finish();
-                    }
-                }
-            }
-        });
-
-        final Button buttonNy = getView().findViewById(R.id.buttonNy);
-        buttonNy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intentResult = new Intent();
-                currentCity = buttonNy.getText().toString();
-                intentResult.putExtra(CITY_RESULT, currentCity);
-                if (getTargetFragment() != null) {
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), 0, intentResult);
-                } else {
-                    requireActivity().setResult(0, intentResult);
-                    if (getResources().getConfiguration().orientation
-                            != Configuration.ORIENTATION_LANDSCAPE) {
-                        requireActivity().finish();
-                    }
-                }
-            }
-        });
-         */
+    private void hideError(TextView view) {
+        view.setError(null);
     }
 
     @Override
