@@ -25,4 +25,5 @@
     <string name="yandex_weather">Яндекс погода</string>
     <string name="Error_city">Неправильное название</string>
     <string name="Dark_theme">Темная тема</string>
+    <string name="Update">Обновить</string>
 </resources>
