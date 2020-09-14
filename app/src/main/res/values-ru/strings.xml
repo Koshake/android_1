@@ -26,4 +26,7 @@
     <string name="Error_city">Неправильное название</string>
     <string name="Dark_theme">Темная тема</string>
     <string name="Update">Обновить</string>
+    <string name="Show_history">Показать историю</string>
+    <string name="navigation_drawer_open">Открыть</string>
+    <string name="navigation_drawer_close">закрыть</string>
 </resources>

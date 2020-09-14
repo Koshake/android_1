@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/fragment_temp"
-        android:name="com.koshake1.lesson1.TemperatureFragment"
+        android:name="com.koshake1.lesson1.temperature.TemperatureFragment"
         android:layout_width="0px"
         android:layout_height="match_parent"
         android:layout_weight="1" />

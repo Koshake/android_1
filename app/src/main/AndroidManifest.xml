@@ -10,16 +10,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:label="@string/weather_app"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CityActivity"></activity>
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".cities.CityActivity"></activity>
+        <activity android:name=".settings.SettingActivity"></activity>
+        <activity android:name=".cities.HistoryActivity"></activity>
     </application>
 
 </manifest>

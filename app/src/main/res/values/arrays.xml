@@ -2,23 +2,23 @@
 <resources>
     <string-array name="cities">
     <item>Moscow</item>
-    <item>Saint-Petersburg</item>
-    <item>Samara</item>
+    <item>Saint Petersburg</item>
+    <item>Oslo</item>
     <item>New York</item>
     <item>London</item>
     <item>Paris</item>
     <item>Madrid</item>
     <item>Berlin</item>
-    <item>Viena</item>
+    <item>Prague</item>
     <item>Rome</item>
-    <item>Strasburg</item>
-    <item>Istambul</item>
-    <item>Deli</item>
+    <item>Stockholm</item>
+    <item>Istanbul</item>
+    <item>Delhi</item>
     <item>Jakarta</item>
     <item>San Paulo</item>
-        <item>Pekin</item>
-        <item>Tokio</item>
-        <item>Singapure</item>
+        <item>Seoul</item>
+        <item>Tokyo</item>
+        <item>Colombo</item>
 </string-array>
 
     <string-array name="temperature">

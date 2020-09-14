@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_select"
+        android:orderInCategory="10"
+        android:title="@string/Select_city"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_history"
+        android:orderInCategory="20"
+        android:title="@string/Show_history"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="30"
+        android:title="@string/settings"
+        app:showAsAction="never" />
+</menu>

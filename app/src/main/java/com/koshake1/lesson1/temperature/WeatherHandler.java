@@ -1,11 +1,10 @@
-package com.koshake1.lesson1;
+package com.koshake1.lesson1.temperature;
 
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.koshake1.lesson1.BuildConfig;
 import com.koshake1.lesson1.model.WeatherRequest;
 
 import java.io.BufferedReader;
@@ -24,6 +23,7 @@ public class WeatherHandler {
     public WeatherHandler(TemperatureFragment fragment) {
         this.fragment = fragment;
     }
+
 
     public void updateWeather(){
         try {
