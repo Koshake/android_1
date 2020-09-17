@@ -6,14 +6,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.koshake1.lesson1.data.Parcel;
+import com.koshake1.lesson1.data.ParcelHourTemp;
 import com.koshake1.lesson1.R;
 
 import java.util.List;
 
 class TemperatureAdapter extends RecyclerView.Adapter<TemperatureViewHolder> {
 
-    private List<Parcel> items;
+    private List<ParcelHourTemp> items;
 
     @NonNull
     @Override
@@ -40,7 +40,7 @@ class TemperatureAdapter extends RecyclerView.Adapter<TemperatureViewHolder> {
         }
     }
 
-    public void setItems(List<Parcel> items) {
+    public void setItems(List<ParcelHourTemp> items) {
         this.items = items;
         notifyDataSetChanged();
     }
