@@ -1,4 +1,4 @@
-package com.koshake1.lesson1;
+package com.koshake1.lesson1.temperature;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -6,49 +6,54 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import com.google.gson.Gson;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.koshake1.lesson1.cities.HistoryActivity;
+import com.koshake1.lesson1.data.HistoryParcel;
+import com.koshake1.lesson1.data.Parcel;
+import com.koshake1.lesson1.R;
+import com.koshake1.lesson1.settings.SettingActivity;
+import com.koshake1.lesson1.cities.CitiesFragment;
+import com.koshake1.lesson1.cities.CityActivity;
 import com.koshake1.lesson1.model.WeatherRequest;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.net.ssl.HttpsURLConnection;
+import static com.koshake1.lesson1.data.Constants.CITY_RESULT;
 
-import static com.koshake1.lesson1.Constants.CITY_RESULT;
-
-public class TemperatureFragment extends Fragment {
+public class TemperatureFragment extends Fragment
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private final static int REQUEST_CODE = 123;
     private final static int SETTING_CODE = 88;
     private final int MAX_HOURS = 24;
     private final float TEMP_OFFSET = 273.15f;
+    public static final String HPARCEL = "Hparcel";
     private String currentCity;
     private boolean isLandscape;
     private List<Parcel> history;
-
+    private List<HistoryParcel> cityHistory;
     private TextView cityText;
     private TextView tempText;
     private TextView minTempText;
@@ -71,6 +76,7 @@ public class TemperatureFragment extends Fragment {
         return currentCity;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +88,7 @@ public class TemperatureFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_temperature, container, false);
     }
 
@@ -95,6 +102,7 @@ public class TemperatureFragment extends Fragment {
             init();
             currentCity = getResources().getString(R.string.moscow);
             history = new ArrayList<>();
+            cityHistory = new ArrayList<>();
             for (int i = 0; i < MAX_HOURS; i++) {
                 Parcel parcel = new Parcel(i, getResources().getStringArray(R.array.temperature)[i]);
                 history.add(parcel);
@@ -108,28 +116,22 @@ public class TemperatureFragment extends Fragment {
             adapter.setItems(history);
         }
 
-        Button buttonSelectCity = getView().findViewById(R.id.buttonSelectCity);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            buttonSelectCity.setVisibility(View.GONE);
-        } else {
-            buttonSelectCity.setVisibility(View.VISIBLE);
-        }
-        buttonSelectCity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onButtonSelectCityClicked();
-            }
-        });
-
-        ImageButton buttonSettings = getView().findViewById(R.id.imageButtonSettings);
-        buttonSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onButtonSettingsClicked();
-            }
-        });
 
         weatherHandler.updateWeather();
+        cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
+
+        Toolbar toolbar = initToolbar();
+        initDrawer(toolbar);
+    }
+
+    private void initDrawer(Toolbar toolbar) {
+        DrawerLayout drawer = getView().findViewById(R.id.drawer_layout);
+        NavigationView navigationView = getView().findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                getActivity(), drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -142,12 +144,6 @@ public class TemperatureFragment extends Fragment {
             showCitiesFragment();
         }
 
-    }
-
-    private void onButtonSelectCityClicked() {
-        if (!isLandscape) {
-            showCitiesFragment();
-        }
     }
 
     private void onButtonSettingsClicked() {
@@ -176,6 +172,13 @@ public class TemperatureFragment extends Fragment {
         }
     }
 
+    private void showHistoryFragment() {
+        Intent intent = new Intent();
+        intent.putExtra(HPARCEL, (Serializable) cityHistory);
+        intent.setClass(getActivity(), HistoryActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //Toast.makeText(requireContext(), "Got result", Toast.LENGTH_SHORT).show();
@@ -192,6 +195,8 @@ public class TemperatureFragment extends Fragment {
                         .setAction("Action", null).show();
 
                 weatherHandler.updateWeather();
+
+                cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
             }
         }
     }
@@ -208,6 +213,59 @@ public class TemperatureFragment extends Fragment {
         Snackbar.make(getView(), text, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+       int id = item.getItemId();
+
+       if (id == R.id.action_settings) {
+           onButtonSettingsClicked();
+           return true;
+       }
+
+       if (id == R.id.action_select) {
+           showCitiesFragment();
+           return true;
+       }
+
+        if (id == R.id.action_history) {
+            showHistoryFragment();
+            return true;
+        }
+
+       return super.onOptionsItemSelected(item);
+   }
+
+    private Toolbar initToolbar() {
+        Toolbar toolbar = getView().findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        return toolbar;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_settings:
+                onButtonSettingsClicked();
+                return true;
+            case R.id.nav_cities:
+                showCitiesFragment();
+                return true;
+            case R.id.nav_history:
+                showHistoryFragment();
+                return  true;
+        }
+        return false;
+    }
+
+
 }
 
 

@@ -1,10 +1,13 @@
-package com.koshake1.lesson1;
+package com.koshake1.lesson1.temperature;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.koshake1.lesson1.data.Parcel;
+import com.koshake1.lesson1.R;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.koshake1.lesson1;
+package com.koshake1.lesson1.cities;
 
 public class CityPresenter {
     private static CityPresenter instance = null;

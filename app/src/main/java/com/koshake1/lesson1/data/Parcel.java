@@ -1,4 +1,4 @@
-package com.koshake1.lesson1;
+package com.koshake1.lesson1.data;
 
 import java.io.Serializable;
 

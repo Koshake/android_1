@@ -25,4 +25,7 @@
     <string name="Error_city">Wrong city name</string>
     <string name="Dark_theme">Dark theme</string>
     <string name="Update">Update</string>
+    <string name="Show_history">Show history</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

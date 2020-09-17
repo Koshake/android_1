@@ -1,4 +1,4 @@
-package com.koshake1.lesson1;
+package com.koshake1.lesson1.cities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,25 +11,22 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.koshake1.lesson1.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.koshake1.lesson1.Constants.CITY_RESULT;
+import static com.koshake1.lesson1.data.Constants.CITY_RESULT;
 
 public class CitiesFragment extends Fragment {
 

@@ -1,21 +1,11 @@
-package com.koshake1.lesson1;
+package com.koshake1.lesson1.cities;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.koshake1.lesson1.Constants.CITY_RESULT;
+import com.koshake1.lesson1.R;
 
 public class CityActivity extends AppCompatActivity {
     @Override

@@ -3,22 +3,22 @@
     <string-array name="cities">
         <item>Москва</item>
         <item>Санкт-Петербург</item>
-        <item>Самара</item>
+        <item>Осло</item>
         <item>Нью Йорк</item>
         <item>Лондон</item>
         <item>Париж</item>
         <item>Мадрид</item>
         <item>Берлин</item>
-        <item>Вена</item>
+        <item>Прага</item>
         <item>Рим</item>
-        <item>Страсбург</item>
+        <item>Стокгольм</item>
         <item>Стамбул</item>
         <item>Дели</item>
         <item>Джакарта</item>
         <item>Сан Пауло</item>
-        <item>Пекин</item>
+        <item>Сеул</item>
         <item>Токио</item>
-        <item>Сингапур</item>
+        <item>Коломбо</item>
     </string-array>
     <string-array name="temperature">
         <item>16\u00B0</item>
