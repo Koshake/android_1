@@ -39,7 +39,7 @@ public class WeatherHandler {
                     try {
                         urlConnection = (HttpsURLConnection) uri.openConnection();
                         urlConnection.setRequestMethod("GET");
-                        urlConnection.setReadTimeout(10000);
+                        urlConnection.setReadTimeout(5000);
                         BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                         String result = getLines(in);
                         Gson gson = new Gson();

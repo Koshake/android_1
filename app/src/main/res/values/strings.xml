@@ -28,4 +28,8 @@
     <string name="Show_history">Show history</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="Ok">Ok</string>
+    <string name="Cancel">Cancel</string>
+    <string name="dialog_message">Connection failed!</string>
+    <string name="dialog_message_2">Close app?</string>
 </resources>

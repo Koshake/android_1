@@ -29,4 +29,8 @@
     <string name="Show_history">Показать историю</string>
     <string name="navigation_drawer_open">Открыть</string>
     <string name="navigation_drawer_close">закрыть</string>
+    <string name="Ok">Ок</string>
+    <string name="Cancel">Отмена</string>
+    <string name="dialog_message">Ошибка соединения!</string>
+    <string name="dialog_message_2">Закрыть приложение?</string>
 </resources>

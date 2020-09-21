@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,15 +21,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.koshake1.lesson1.cities.HistoryActivity;
 import com.koshake1.lesson1.data.HistoryParcel;
-import com.koshake1.lesson1.data.Parcel;
+import com.koshake1.lesson1.data.ParcelHourTemp;
 import com.koshake1.lesson1.R;
+import com.koshake1.lesson1.dialog.MyBottomSheetDialogFragment;
+import com.koshake1.lesson1.dialog.OnDialogListener;
 import com.koshake1.lesson1.settings.SettingActivity;
 import com.koshake1.lesson1.cities.CitiesFragment;
 import com.koshake1.lesson1.cities.CityActivity;
@@ -52,7 +52,7 @@ public class TemperatureFragment extends Fragment
     public static final String HPARCEL = "Hparcel";
     private String currentCity;
     private boolean isLandscape;
-    private List<Parcel> history;
+    private List<ParcelHourTemp> history;
     private List<HistoryParcel> cityHistory;
     private TextView cityText;
     private TextView tempText;
@@ -61,8 +61,6 @@ public class TemperatureFragment extends Fragment
     private TextView description;
 
     WeatherHandler weatherHandler = new WeatherHandler(this);
-
-    private static final String TAG = "WEATHER";
 
     private void init() {
         cityText = getView().findViewById(R.id.textViewCity);
@@ -104,7 +102,7 @@ public class TemperatureFragment extends Fragment
             history = new ArrayList<>();
             cityHistory = new ArrayList<>();
             for (int i = 0; i < MAX_HOURS; i++) {
-                Parcel parcel = new Parcel(i, getResources().getStringArray(R.array.temperature)[i]);
+                ParcelHourTemp parcel = new ParcelHourTemp(i, getResources().getStringArray(R.array.temperature)[i]);
                 history.add(parcel);
             }
 
@@ -209,9 +207,26 @@ public class TemperatureFragment extends Fragment
         description.setText(weatherRequest.getWeather()[0].getDescription());
     }
 
+    private final OnDialogListener dialogListener = new OnDialogListener() {
+        @Override
+        public void onDialogOk() {
+            getActivity().finish();
+        }
+
+        @Override
+        public void onDialogCancel() {
+
+        }
+    };
+
     public void setMessage(String text) {
         Snackbar.make(getView(), text, Snackbar.LENGTH_SHORT)
                 .setAction("Action", null).show();
+
+        MyBottomSheetDialogFragment dialogFragment =
+                MyBottomSheetDialogFragment.newInstance();
+        dialogFragment.setOnDialogListener(dialogListener);
+        dialogFragment.show(getFragmentManager(), "dialog_fragment");
     }
 
 
@@ -223,21 +238,16 @@ public class TemperatureFragment extends Fragment
 
     @Override
    public boolean onOptionsItemSelected(MenuItem item) {
-       int id = item.getItemId();
-
-       if (id == R.id.action_settings) {
-           onButtonSettingsClicked();
-           return true;
-       }
-
-       if (id == R.id.action_select) {
-           showCitiesFragment();
-           return true;
-       }
-
-        if (id == R.id.action_history) {
-            showHistoryFragment();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                onButtonSettingsClicked();
+                return true;
+            case R.id.action_select:
+                showCitiesFragment();
+                return true;
+            case R.id.action_history:
+                showHistoryFragment();
+                return  true;
         }
 
        return super.onOptionsItemSelected(item);
@@ -264,7 +274,6 @@ public class TemperatureFragment extends Fragment
         }
         return false;
     }
-
 
 }
 
