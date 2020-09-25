@@ -47,7 +47,7 @@ public class WeatherHandler {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                fragment.displayWeather(weatherRequest);
+                                //fragment.displayWeather(weatherRequest);
                             }
                         });
                     } catch (FileNotFoundException e) {

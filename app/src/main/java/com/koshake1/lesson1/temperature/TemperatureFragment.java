@@ -12,9 +12,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -39,8 +46,16 @@ import com.koshake1.lesson1.model.WeatherRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.koshake1.lesson1.data.Constants.CITY_RESULT;
+import static com.koshake1.lesson1.data.Constants.KEY_CITY;
+import static com.koshake1.lesson1.data.Constants.KEY_READ_RESULT;
+import static com.koshake1.lesson1.data.Constants.KEY_RESULT_CITY;
+import static com.koshake1.lesson1.data.Constants.KEY_RESULT_DESCRIPTION;
+import static com.koshake1.lesson1.data.Constants.KEY_RESULT_MAX_TEMP;
+import static com.koshake1.lesson1.data.Constants.KEY_RESULT_MIN_TEMP;
+import static com.koshake1.lesson1.data.Constants.KEY_RESULT_TEMP;
 
 public class TemperatureFragment extends Fragment
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -115,7 +130,8 @@ public class TemperatureFragment extends Fragment
         }
 
 
-        weatherHandler.updateWeather();
+        //weatherHandler.updateWeather();
+        initWorkerManager();
         cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
 
         Toolbar toolbar = initToolbar();
@@ -192,19 +208,51 @@ public class TemperatureFragment extends Fragment
                 Snackbar.make(getView(), String.format("City changed to %s", currentCity), Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
 
-                weatherHandler.updateWeather();
-
+                //weatherHandler.updateWeather();
+                initWorkerManager();
                 cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
             }
         }
     }
 
-    public void displayWeather(WeatherRequest weatherRequest) {
-        cityText.setText(weatherRequest.getName());
-        tempText.setText(String.format("%d\u00B0", Math.round(weatherRequest.getMain().getTemp() - TEMP_OFFSET)));
-        minTempText.setText(String.format("%d\u00B0", Math.round(weatherRequest.getMain().getTempMin() - TEMP_OFFSET)));
-        maxTempText.setText(String.format("%d\u00B0", Math.round(weatherRequest.getMain().getTempMax() - TEMP_OFFSET)));
-        description.setText(weatherRequest.getWeather()[0].getDescription());
+    private  void initWorkerManager() {
+        Data myData = new Data.Builder()
+                .putString(KEY_CITY, currentCity)
+                .build();
+
+        final OneTimeWorkRequest workRequest1 = new OneTimeWorkRequest
+                .Builder(WeatherRequestWorker.class)
+                .setInputData(myData)
+                .build();
+
+        final OneTimeWorkRequest workRequest2 = new OneTimeWorkRequest
+                .Builder(WeatherParserWorker.class)
+                .build();
+
+        WorkManager workManager =  WorkManager.getInstance();
+        workManager.beginWith(workRequest1).then(workRequest2).enqueue();
+
+        workManager.getWorkInfoByIdLiveData(workRequest2.getId())
+                .observe(this, new Observer<WorkInfo>() {
+                    @Override
+                    public void onChanged(@Nullable WorkInfo workInfo) {
+                        if (workInfo != null) {
+                            if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                                displayWeather(workInfo);
+                            } else if (workInfo.getState() == WorkInfo.State.FAILED) {
+                                setMessage("Failed to update information!");
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void displayWeather(WorkInfo workInfo) {
+        cityText.setText(workInfo.getOutputData().getString(KEY_RESULT_CITY));
+        tempText.setText(String.format("%d\u00B0", workInfo.getOutputData().getInt(KEY_RESULT_TEMP, 0)));
+        minTempText.setText(String.format("%d\u00B0", workInfo.getOutputData().getInt(KEY_RESULT_MIN_TEMP, 0)));
+        maxTempText.setText(String.format("%d\u00B0", workInfo.getOutputData().getInt(KEY_RESULT_MAX_TEMP, 0)));
+        description.setText(workInfo.getOutputData().getString(KEY_RESULT_DESCRIPTION));
     }
 
     private final OnDialogListener dialogListener = new OnDialogListener() {
@@ -220,8 +268,6 @@ public class TemperatureFragment extends Fragment
     };
 
     public void setMessage(String text) {
-        Snackbar.make(getView(), text, Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show();
 
         MyBottomSheetDialogFragment dialogFragment =
                 MyBottomSheetDialogFragment.newInstance();
