@@ -33,4 +33,8 @@
     <string name="Cancel">Отмена</string>
     <string name="dialog_message">Ошибка соединения!</string>
     <string name="dialog_message_2">Закрыть приложение?</string>
+    <string name="winter_img">https://images.unsplash.com/photo-1503517245364-78fc9a9cdd37?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=633&amp;q=80</string>
+    <string name="autumn_img">"https://images.unsplash.com/photo-1507629221898-576a56b530bb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd&amp;auto=format&amp;fit=cro&amp;w=634&amp;q=80"</string>
+    <string name="spring_img">https://images.unsplash.com/photo-1523224042829-4731dd15a3bb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=634&amp;q=80</string>
+    <string name="summer_img">https://images.unsplash.com/photo-1529923123842-3310dfdc0b10?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1350&amp;q=80</string>
 </resources>

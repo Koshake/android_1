@@ -2,60 +2,53 @@ package com.koshake1.lesson1.temperature;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.koshake1.lesson1.BuildConfig;
+import com.koshake1.lesson1.R;
+import com.koshake1.lesson1.cities.CitiesFragment;
+import com.koshake1.lesson1.cities.CityActivity;
 import com.koshake1.lesson1.cities.HistoryActivity;
 import com.koshake1.lesson1.data.HistoryParcel;
 import com.koshake1.lesson1.data.ParcelHourTemp;
-import com.koshake1.lesson1.R;
 import com.koshake1.lesson1.dialog.MyBottomSheetDialogFragment;
 import com.koshake1.lesson1.dialog.OnDialogListener;
-import com.koshake1.lesson1.settings.SettingActivity;
-import com.koshake1.lesson1.cities.CitiesFragment;
-import com.koshake1.lesson1.cities.CityActivity;
 import com.koshake1.lesson1.model.WeatherRequest;
+import com.koshake1.lesson1.settings.SettingActivity;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import retrofit2.Response;
 
 import static com.koshake1.lesson1.data.Constants.CITY_RESULT;
-import static com.koshake1.lesson1.data.Constants.KEY_CITY;
-import static com.koshake1.lesson1.data.Constants.KEY_READ_RESULT;
-import static com.koshake1.lesson1.data.Constants.KEY_RESULT_CITY;
-import static com.koshake1.lesson1.data.Constants.KEY_RESULT_DESCRIPTION;
-import static com.koshake1.lesson1.data.Constants.KEY_RESULT_MAX_TEMP;
-import static com.koshake1.lesson1.data.Constants.KEY_RESULT_MIN_TEMP;
-import static com.koshake1.lesson1.data.Constants.KEY_RESULT_TEMP;
 
 public class TemperatureFragment extends Fragment
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -74,8 +67,8 @@ public class TemperatureFragment extends Fragment
     private TextView minTempText;
     private TextView maxTempText;
     private TextView description;
+    WeatherRequestRetrofit retrofit;
 
-    WeatherHandler weatherHandler = new WeatherHandler(this);
 
     private void init() {
         cityText = getView().findViewById(R.id.textViewCity);
@@ -83,12 +76,9 @@ public class TemperatureFragment extends Fragment
         minTempText = getView().findViewById(R.id.textViewMin);
         maxTempText = getView().findViewById(R.id.textViewMax);
         description = getView().findViewById(R.id.textViewDescription);
-    }
 
-    public String getCurrentCity() {
-        return currentCity;
+        retrofit = new WeatherRequestRetrofit(this);
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,31 +98,31 @@ public class TemperatureFragment extends Fragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        init();
         if (savedInstanceState != null) {
             currentCity = savedInstanceState.getString(CITY_RESULT, getResources().getString(R.string.moscow));
             cityText.setText(currentCity);
+
         } else {
-            init();
             currentCity = getResources().getString(R.string.moscow);
             history = new ArrayList<>();
             cityHistory = new ArrayList<>();
+            cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
             for (int i = 0; i < MAX_HOURS; i++) {
                 ParcelHourTemp parcel = new ParcelHourTemp(i, getResources().getStringArray(R.array.temperature)[i]);
                 history.add(parcel);
             }
-
             final RecyclerView recyclerView = getView().findViewById(R.id.recycleTemp);
             recyclerView.setLayoutManager(new LinearLayoutManager(getView().getContext(),
                     RecyclerView.HORIZONTAL, false));
             final TemperatureAdapter adapter = new TemperatureAdapter();
             recyclerView.setAdapter(adapter);
             adapter.setItems(history);
+
         }
 
-
-        //weatherHandler.updateWeather();
-        initWorkerManager();
-        cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
+        retrofit.initRetorfit();
+        retrofit.requestRetrofit(currentCity, BuildConfig.WEATHER_API_KEY);
 
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
@@ -208,51 +198,18 @@ public class TemperatureFragment extends Fragment
                 Snackbar.make(getView(), String.format("City changed to %s", currentCity), Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
 
-                //weatherHandler.updateWeather();
-                initWorkerManager();
+                retrofit.requestRetrofit(currentCity, BuildConfig.WEATHER_API_KEY);
                 cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
             }
         }
     }
 
-    private  void initWorkerManager() {
-        Data myData = new Data.Builder()
-                .putString(KEY_CITY, currentCity)
-                .build();
-
-        final OneTimeWorkRequest workRequest1 = new OneTimeWorkRequest
-                .Builder(WeatherRequestWorker.class)
-                .setInputData(myData)
-                .build();
-
-        final OneTimeWorkRequest workRequest2 = new OneTimeWorkRequest
-                .Builder(WeatherParserWorker.class)
-                .build();
-
-        WorkManager workManager =  WorkManager.getInstance();
-        workManager.beginWith(workRequest1).then(workRequest2).enqueue();
-
-        workManager.getWorkInfoByIdLiveData(workRequest2.getId())
-                .observe(this, new Observer<WorkInfo>() {
-                    @Override
-                    public void onChanged(@Nullable WorkInfo workInfo) {
-                        if (workInfo != null) {
-                            if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                                displayWeather(workInfo);
-                            } else if (workInfo.getState() == WorkInfo.State.FAILED) {
-                                setMessage("Failed to update information!");
-                            }
-                        }
-                    }
-                });
-    }
-
-    public void displayWeather(WorkInfo workInfo) {
-        cityText.setText(workInfo.getOutputData().getString(KEY_RESULT_CITY));
-        tempText.setText(String.format("%d\u00B0", workInfo.getOutputData().getInt(KEY_RESULT_TEMP, 0)));
-        minTempText.setText(String.format("%d\u00B0", workInfo.getOutputData().getInt(KEY_RESULT_MIN_TEMP, 0)));
-        maxTempText.setText(String.format("%d\u00B0", workInfo.getOutputData().getInt(KEY_RESULT_MAX_TEMP, 0)));
-        description.setText(workInfo.getOutputData().getString(KEY_RESULT_DESCRIPTION));
+    public void displayWeather(Response<WeatherRequest> response) {
+        cityText.setText(response.body().getName());
+        tempText.setText(String.format("%d\u00B0", Math.round(response.body().getMain().getTemp() - TEMP_OFFSET)));
+        minTempText.setText(String.format("%d\u00B0", Math.round(response.body().getMain().getTemp_min() - TEMP_OFFSET)));
+        maxTempText.setText(String.format("%d\u00B0", Math.round(response.body().getMain().getTemp_min() - TEMP_OFFSET)));
+        description.setText(response.body().getWeather()[0].getDescription());
     }
 
     private final OnDialogListener dialogListener = new OnDialogListener() {
@@ -321,6 +278,42 @@ public class TemperatureFragment extends Fragment
         return false;
     }
 
+    public void changeImageOnTemperature(float temp)
+    {
+        String url;
+        temp -= TEMP_OFFSET;
+        if (temp < 0) {
+            url = getResources().getString(R.string.winter_img);
+        }
+        else if (temp < 10) {
+            url = getResources().getString(R.string.autumn_img);
+        }
+        else if (temp < 20) {
+            url = getResources().getString(R.string.spring_img);
+        }
+        else {
+            url = getResources().getString(R.string.summer_img);
+        }
+
+        setBackgroundImage(url);
+    }
+
+    private void setBackgroundImage(String url) {
+        final ConstraintLayout layout = getView().findViewById(R.id.mainLayout);
+        final ImageView img = new ImageView(getContext());
+        Picasso.get().load(url)
+                .into(img, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        layout.setBackground(img.getDrawable());
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        layout.setBackground(getResources().getDrawable(R.drawable.sunset_sky));
+                    }
+                });
+    }
 }
 
 

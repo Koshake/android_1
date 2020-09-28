@@ -19,6 +19,8 @@
         <item>Seoul</item>
         <item>Tokyo</item>
         <item>Colombo</item>
+        <item>Murmansk</item>
+        <item>Anadyr</item>
 </string-array>
 
     <string-array name="temperature">

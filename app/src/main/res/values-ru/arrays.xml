@@ -19,6 +19,8 @@
         <item>Сеул</item>
         <item>Токио</item>
         <item>Коломбо</item>
+        <item>Мурманск</item>
+        <item>Анадырь</item>
     </string-array>
     <string-array name="temperature">
         <item>16\u00B0</item>
