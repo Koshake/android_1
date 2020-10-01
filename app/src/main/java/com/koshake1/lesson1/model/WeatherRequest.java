@@ -1,8 +1,17 @@
 package com.koshake1.lesson1.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class WeatherRequest {
+    @SerializedName("weather")
+    @Expose
     private Weather[] weather;
+    @SerializedName("main")
+    @Expose
     private Main main;
+    @SerializedName("name")
+    @Expose
     private String name;
 
     public Weather[] getWeather() {
