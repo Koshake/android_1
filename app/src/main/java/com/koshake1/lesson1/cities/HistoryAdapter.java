@@ -9,20 +9,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.koshake1.lesson1.HistorySource;
 import com.koshake1.lesson1.R;
 import com.koshake1.lesson1.data.HistoryParcel;
+import com.koshake1.lesson1.history.History;
 import com.koshake1.lesson1.temperature.TemperatureViewHolder;
 
 import java.util.List;
 
+import static com.koshake1.lesson1.temperature.TemperatureFragment.historySource;
+
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
-    private final List<HistoryParcel> data;
+    //private HistorySource historySource;
     private final Activity activity;
     private int menuPosition;
 
-    public HistoryAdapter(List<HistoryParcel> data, Activity activity) {
-        this.data = data;
+    public HistoryAdapter(Activity activity) {
         this.activity = activity;
     }
 
@@ -36,34 +39,31 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
-        if (data != null) {
-            holder.bind(String.valueOf(data.get(position).getCity()), data.get(position).getTemperature());
+        if (holder != null) {
+            List<History> historyList = historySource.getHistory();
+            History history = historyList.get(position);
+            holder.bind(String.valueOf(history.city), String.valueOf(history.temp));
         }
     }
 
     @Override
     public int getItemCount() {
-        return data == null ? 0 : data.size();
+        return historySource == null ? 0 : (int) historySource.getCountHistory();
     }
 
-    void addItem(HistoryParcel element) {
-        data.add(element);
-        notifyItemInserted(data.size() - 1);
+    void addItem(History history) {
+        historySource.addHistory(history);
+        notifyItemInserted((int) historySource.getCountHistory() - 1);
     }
 
-    void updateItem(HistoryParcel element, int position) {
-        data.set(position, element);
+    void updateItem(History history, int position) {
+        historySource.updateHistory(history);
         notifyItemChanged(position);
     }
 
     void removeItem(int position) {
-        data.remove(position);
+        historySource.removeHistory(position);
         notifyItemRemoved(position);
-    }
-
-    void clearItems() {
-        data.clear();
-        notifyDataSetChanged();
     }
     
     public int getMenuPosition() {

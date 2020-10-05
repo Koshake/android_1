@@ -1,10 +1,10 @@
 package com.koshake1.lesson1.temperature;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,27 +29,32 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.koshake1.lesson1.App;
 import com.koshake1.lesson1.BuildConfig;
+import com.koshake1.lesson1.HistorySource;
 import com.koshake1.lesson1.R;
 import com.koshake1.lesson1.cities.CitiesFragment;
 import com.koshake1.lesson1.cities.CityActivity;
 import com.koshake1.lesson1.cities.HistoryActivity;
+import com.koshake1.lesson1.dao.CityHistoryDao;
 import com.koshake1.lesson1.data.HistoryParcel;
 import com.koshake1.lesson1.data.ParcelHourTemp;
 import com.koshake1.lesson1.dialog.MyBottomSheetDialogFragment;
 import com.koshake1.lesson1.dialog.OnDialogListener;
+import com.koshake1.lesson1.history.History;
 import com.koshake1.lesson1.model.WeatherRequest;
 import com.koshake1.lesson1.settings.SettingActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.koshake1.lesson1.data.Constants.CITY_RESULT;
+import static com.koshake1.lesson1.data.Constants.KEY_CITY;
 
 public class TemperatureFragment extends Fragment
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -58,17 +64,18 @@ public class TemperatureFragment extends Fragment
     private final int MAX_HOURS = 24;
     private final float TEMP_OFFSET = 273.15f;
     public static final String HPARCEL = "Hparcel";
+    public static final String WEATHER_PREF= "weather_pref";
     private String currentCity;
     private boolean isLandscape;
     private List<ParcelHourTemp> history;
-    private List<HistoryParcel> cityHistory;
+    private HistoryParcel cityHistory;
     private TextView cityText;
     private TextView tempText;
     private TextView minTempText;
     private TextView maxTempText;
     private TextView description;
     WeatherRequestRetrofit retrofit;
-
+    public static HistorySource historySource;
 
     private void init() {
         cityText = getView().findViewById(R.id.textViewCity);
@@ -104,10 +111,10 @@ public class TemperatureFragment extends Fragment
             cityText.setText(currentCity);
 
         } else {
-            currentCity = getResources().getString(R.string.moscow);
+            //currentCity = getResources().getString(R.string.moscow);
+            loadSharedPreferences();
             history = new ArrayList<>();
-            cityHistory = new ArrayList<>();
-            cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
+            cityHistory = new HistoryParcel(currentCity, tempText.getText().toString());
             for (int i = 0; i < MAX_HOURS; i++) {
                 ParcelHourTemp parcel = new ParcelHourTemp(i, getResources().getStringArray(R.array.temperature)[i]);
                 history.add(parcel);
@@ -119,6 +126,7 @@ public class TemperatureFragment extends Fragment
             recyclerView.setAdapter(adapter);
             adapter.setItems(history);
 
+            initDataBase();
         }
 
         retrofit.initRetorfit();
@@ -126,6 +134,18 @@ public class TemperatureFragment extends Fragment
 
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
+    }
+
+    private void initDataBase() {
+        CityHistoryDao historyDao = App
+                .getInstance()
+                .getHistoryDao();
+        historySource = new HistorySource(historyDao);
+        //historySource.clearAll();
+        History history = new History();
+        history.city = currentCity;
+        history.temp = tempText.getText().toString();
+        historySource.addHistory(history);
     }
 
     private void initDrawer(Toolbar toolbar) {
@@ -147,7 +167,13 @@ public class TemperatureFragment extends Fragment
         if (isLandscape) {
             showCitiesFragment();
         }
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Toast.makeText(requireContext(), "destroy", Toast.LENGTH_SHORT).show();
+        saveSharedPreferences();
     }
 
     private void onButtonSettingsClicked() {
@@ -178,7 +204,7 @@ public class TemperatureFragment extends Fragment
 
     private void showHistoryFragment() {
         Intent intent = new Intent();
-        intent.putExtra(HPARCEL, (Serializable) cityHistory);
+        intent.putExtra(HPARCEL, (Parcelable) cityHistory);
         intent.setClass(getActivity(), HistoryActivity.class);
         startActivity(intent);
     }
@@ -199,7 +225,11 @@ public class TemperatureFragment extends Fragment
                         .setAction("Action", null).show();
 
                 retrofit.requestRetrofit(currentCity, BuildConfig.WEATHER_API_KEY);
-                cityHistory.add(new HistoryParcel(currentCity, tempText.getText().toString()));
+                cityHistory = new HistoryParcel(currentCity, tempText.getText().toString());
+                History history = new History();
+                history.city = currentCity;
+                history.temp = tempText.getText().toString();
+                historySource.addHistory(history);
             }
         }
     }
@@ -313,6 +343,19 @@ public class TemperatureFragment extends Fragment
                         layout.setBackground(getResources().getDrawable(R.drawable.sunset_sky));
                     }
                 });
+    }
+
+
+    private void saveSharedPreferences() {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(WEATHER_PREF, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(KEY_CITY, currentCity);
+        editor.commit();
+    }
+
+    private void loadSharedPreferences() {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(WEATHER_PREF, MODE_PRIVATE);
+        currentCity = sharedPref.getString(KEY_CITY, getResources().getString(R.string.moscow));
     }
 }
 
