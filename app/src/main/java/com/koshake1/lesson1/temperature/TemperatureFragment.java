@@ -1,10 +1,17 @@
 package com.koshake1.lesson1.temperature;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +40,7 @@ import com.koshake1.lesson1.App;
 import com.koshake1.lesson1.BuildConfig;
 import com.koshake1.lesson1.HistorySource;
 import com.koshake1.lesson1.R;
+import com.koshake1.lesson1.broadcast.myBroadcastReceiver;
 import com.koshake1.lesson1.cities.CitiesFragment;
 import com.koshake1.lesson1.cities.CityActivity;
 import com.koshake1.lesson1.cities.HistoryActivity;
@@ -76,6 +84,7 @@ public class TemperatureFragment extends Fragment
     private TextView description;
     WeatherRequestRetrofit retrofit;
     public static HistorySource historySource;
+    private myBroadcastReceiver myBroadcastReceiver = new myBroadcastReceiver();
 
     private void init() {
         cityText = getView().findViewById(R.id.textViewCity);
@@ -111,7 +120,6 @@ public class TemperatureFragment extends Fragment
             cityText.setText(currentCity);
 
         } else {
-            //currentCity = getResources().getString(R.string.moscow);
             loadSharedPreferences();
             history = new ArrayList<>();
             cityHistory = new HistoryParcel(currentCity, tempText.getText().toString());
@@ -134,6 +142,11 @@ public class TemperatureFragment extends Fragment
 
         Toolbar toolbar = initToolbar();
         initDrawer(toolbar);
+
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(Intent.ACTION_BATTERY_LOW);
+        getActivity().registerReceiver(myBroadcastReceiver, filter);
+
     }
 
     private void initDataBase() {
@@ -141,7 +154,6 @@ public class TemperatureFragment extends Fragment
                 .getInstance()
                 .getHistoryDao();
         historySource = new HistorySource(historyDao);
-        //historySource.clearAll();
         History history = new History();
         history.city = currentCity;
         history.temp = tempText.getText().toString();
@@ -174,6 +186,7 @@ public class TemperatureFragment extends Fragment
         super.onDestroy();
         //Toast.makeText(requireContext(), "destroy", Toast.LENGTH_SHORT).show();
         saveSharedPreferences();
+        getActivity().unregisterReceiver(myBroadcastReceiver);
     }
 
     private void onButtonSettingsClicked() {
