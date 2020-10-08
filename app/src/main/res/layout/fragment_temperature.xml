@@ -131,8 +131,7 @@
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="18\u00B0"
-                android:textAppearance="@style/MyTextAppearance"
-                android:textSize="14sp" />
+                android:textAppearance="@style/MyTextAppearance" />
 
         </LinearLayout>
 
@@ -148,13 +147,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonYandex"
-            style="@style/MyButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cornerRadius="10dp"
+            style="@style/MyButtonStyle"
             android:text="@string/yandex_weather"
             android:textAppearance="@style/MyTextAppearance"
+            android:textColor="@color/textColor"
+            app:cornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

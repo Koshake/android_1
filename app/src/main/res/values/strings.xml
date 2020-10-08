@@ -32,6 +32,12 @@
     <string name="Cancel">Cancel</string>
     <string name="dialog_message">Connection failed!</string>
     <string name="dialog_message_2">Close app?</string>
+    <string name="no_connection">No connection</string>
+    <string name="low_battery">Low battery</string>
+    <string name="Weather_in_current_position">Weather in current position</string>
+    <string name="hot_weather">It is  extremely hot today, be careful!</string>
+    <string name="cold_weather">It is  extremely cold today, be careful!</string>
+    <string name="weather_warning">Weather warning</string>
     <string name="winter_img">https://images.unsplash.com/photo-1503517245364-78fc9a9cdd37?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=633&amp;q=80</string>
     <string name="autumn_img">https://images.unsplash.com/photo-1507629221898-576a56b530bb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd&amp;auto=format&amp;fit=cro&amp;w=634&amp;q=80"</string>
     <string name="spring_img">https://images.unsplash.com/photo-1523224042829-4731dd15a3bb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=634&amp;q=80</string>

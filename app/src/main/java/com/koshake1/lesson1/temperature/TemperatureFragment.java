@@ -1,12 +1,18 @@
 package com.koshake1.lesson1.temperature;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +34,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -60,6 +68,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
+import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 import static com.koshake1.lesson1.data.Constants.CITY_RESULT;
 import static com.koshake1.lesson1.data.Constants.KEY_CITY;
@@ -68,11 +77,15 @@ public class TemperatureFragment extends Fragment
         implements NavigationView.OnNavigationItemSelectedListener{
 
     private final static int REQUEST_CODE = 123;
+    private static final int PERMISSION_REQUEST_CODE = 10;
     private final static int SETTING_CODE = 88;
     private final int MAX_HOURS = 24;
     private final float TEMP_OFFSET = 273.15f;
     public static final String HPARCEL = "Hparcel";
     public static final String WEATHER_PREF= "weather_pref";
+    private static final String GEO_TAG = "Geo debug";
+    final static String CHANNEL_ID = "2";
+    public final static int WEATHER_NOTIFICATION_ID = 1;
     private String currentCity;
     private boolean isLandscape;
     private List<ParcelHourTemp> history;
@@ -251,7 +264,7 @@ public class TemperatureFragment extends Fragment
         cityText.setText(response.body().getName());
         tempText.setText(String.format("%d\u00B0", Math.round(response.body().getMain().getTemp() - TEMP_OFFSET)));
         minTempText.setText(String.format("%d\u00B0", Math.round(response.body().getMain().getTemp_min() - TEMP_OFFSET)));
-        maxTempText.setText(String.format("%d\u00B0", Math.round(response.body().getMain().getTemp_min() - TEMP_OFFSET)));
+        maxTempText.setText(String.format("%d\u00B0", Math.round(response.body().getMain().getTemp_max() - TEMP_OFFSET)));
         description.setText(response.body().getWeather()[0].getDescription());
     }
 
@@ -317,12 +330,14 @@ public class TemperatureFragment extends Fragment
             case R.id.nav_history:
                 showHistoryFragment();
                 return  true;
+            case R.id.nav_current:
+                requestPemissions();
+                return  true;
         }
         return false;
     }
 
-    public void changeImageOnTemperature(float temp)
-    {
+    public void changeImageOnTemperature(float temp) {
         String url;
         temp -= TEMP_OFFSET;
         if (temp < 0) {
@@ -339,6 +354,34 @@ public class TemperatureFragment extends Fragment
         }
 
         setBackgroundImage(url);
+    }
+
+    public void showBadWeatherNotifications(Response<WeatherRequest> response) {
+        final int MIN_TEMP = -25;
+        final int MAX_TEMP = 30;
+        int min_temp =  Math.round(response.body().getMain().getTemp_min() - TEMP_OFFSET);
+        int max_temp = Math.round(response.body().getMain().getTemp_max() - TEMP_OFFSET);
+        String text = "";
+        String title = getResources().getString(R.string.weather_warning);
+        boolean showWarning = false;
+        if (min_temp < MIN_TEMP) {
+            text = getResources().getString(R.string.cold_weather);
+            showWarning = true;
+        }
+        if (max_temp > MAX_TEMP) {
+            text = getResources().getString(R.string.hot_weather);
+            showWarning = true;
+        }
+
+        if (showWarning) {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(title)
+                    .setContentText(text);
+            NotificationManager notificationManager =
+                    (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(WEATHER_NOTIFICATION_ID, builder.build());
+        }
     }
 
     private void setBackgroundImage(String url) {
@@ -369,6 +412,79 @@ public class TemperatureFragment extends Fragment
     private void loadSharedPreferences() {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(WEATHER_PREF, MODE_PRIVATE);
         currentCity = sharedPref.getString(KEY_CITY, getResources().getString(R.string.moscow));
+    }
+
+    private void requestPemissions() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            requestLocation();
+        } else {
+            requestLocationPermissions();
+            requestLocation();
+        }
+    }
+
+    private void requestLocationPermissions() {
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                || !ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length == 2 &&
+                    (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                requestLocation();
+            }
+        }
+    }
+
+    private void requestLocation() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return;
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+
+        String provider = locationManager.getBestProvider(criteria, true);
+        if (provider != null) {
+            locationManager.requestLocationUpdates(provider, 10000, 10, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    double lat = location.getLatitude();
+                    String latitude = Double.toString(lat);
+                    //Toast.makeText(requireContext(), latitude, Toast.LENGTH_SHORT).show();
+
+                    double lng = location.getLongitude();
+                    String longitude = Double.toString(lng);
+                    //Toast.makeText(requireContext(), longitude, Toast.LENGTH_SHORT).show();
+                    retrofit.requestRetrofit(latitude, longitude, BuildConfig.WEATHER_API_KEY);
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    Log.d(GEO_TAG, String.format("%1 status changed", provider));
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                    Log.d(GEO_TAG, String.format("%1 enabled", provider));
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                    Log.d(GEO_TAG, String.format("%1 disabled", provider));
+                }
+            });
+        }
     }
 }
 

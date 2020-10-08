@@ -42,4 +42,23 @@ public class WeatherRequestRetrofit {
                     }
                 });
     }
+
+    void requestRetrofit(String lat, String lon, String keyApi) {
+        openWeather.loadWeatherByCoord(lat, lon, keyApi)
+                .enqueue(new Callback<WeatherRequest>() {
+                    @Override
+                    public void onResponse(Call<WeatherRequest> call, Response<WeatherRequest> response) {
+                        if (response.body() != null) {
+                            fragment.displayWeather(response);
+                            fragment.changeImageOnTemperature(response.body().getMain().getTemp());
+                            fragment.showBadWeatherNotifications(response);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<WeatherRequest> call, Throwable t) {
+                        fragment.setMessage("Connection fail!");
+                    }
+                });
+    }
 }
