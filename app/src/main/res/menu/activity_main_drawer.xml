@@ -12,8 +12,12 @@
             android:id="@+id/nav_history"
             android:title="@string/Show_history" />
         <item
-            android:id="@+id/nav_cities"
-            android:title="@string/Select_city" />
+        android:id="@+id/nav_cities"
+        android:title="@string/Select_city" />
+
+        <item
+            android:id="@+id/nav_current"
+            android:title="@string/Weather_in_current_position"/>
 
     </group>
 

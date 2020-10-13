@@ -14,10 +14,9 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.koshake1.lesson1.main.MainActivity;
 
+import static com.koshake1.lesson1.temperature.TemperatureFragment.WEATHER_NOTIFICATION_ID;
+
 public class MyFirebaseService extends FirebaseMessagingService {
-    private int messageId = 0;
-    public MyFirebaseService() {
-    }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -35,7 +34,7 @@ public class MyFirebaseService extends FirebaseMessagingService {
                 .setContentText(text);
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(messageId++, builder.build());
+        notificationManager.notify(WEATHER_NOTIFICATION_ID, builder.build());
 
     }
 
