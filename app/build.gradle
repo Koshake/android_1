@@ -25,6 +25,28 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix = '.debug'
+        }
+    }
+    flavorDimensions 'version'
+    productFlavors {
+        freeConfig {
+            dimension 'version'
+            applicationIdSuffix = '.free'
+            versionNameSuffix '.free'
+        }
+        proConfig {
+            dimension 'version'
+            applicationIdSuffix = '.pro'
+            versionNameSuffix '.pro'
+        }
+    }
 }
 
 dependencies {
@@ -45,5 +67,6 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

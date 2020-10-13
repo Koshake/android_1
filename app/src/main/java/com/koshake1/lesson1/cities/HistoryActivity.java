@@ -17,6 +17,7 @@ import java.util.List;
 
 import static com.koshake1.lesson1.temperature.TemperatureFragment.HPARCEL;
 
+
 public class HistoryActivity extends AppCompatActivity {
 
     private HistorySource historySource;
